@@ -1,37 +1,59 @@
 // var jsonfile = require('jsonfile');
 var fs = require('fs');
 var path = require('path');
+var jssha = require('jssha');
 const {clipboard} = require('electron');
-var crypto = require('crypto');
+// var crypto = require('crypto');
 
 var algorithm = "aes-256-ctr";
 var pData = "";
 
-// encrypt() and decrypt() derived from examples on node-crypto-examples;
-// The MIT License (MIT), Copyright (c) 2014-2015 Christoph Hartmann
-// https://github.com/chris-rock/node-crypto-examples
+function makeEncryptor(pass) {
+    let shaPass = new jsSHA("SHA-512", "TEXT");
+    shaPass.update(window.passIn);
+    let key = shaPass.getHash("HEX");
+    let encryptor = require('simple-encryptor')(key);
+    return encryptor;
+}
+
 function encrypt(text) {
-    window.iv = crypto.pbkdf2(window.passIn, hashPass(), 10000, 512, 'sha512', (err, key) => {
-        if (err) throw err;
-        console.log(key.toString('hex'));
-        return key.toString('hex');
-    });
-    let cipher = crypto.createCipheriv(algorithm, window.passIn, window.iv);
-    let crypted = cipher.update(text, 'utf8', 'hex');
-    crypted += cipher.final('hex');
-    return crypted;
+    let encryptor = makeEncryptor(window.passIn);
+    let encrypted = encryptor.encrypt(text);
+    return encrypted;
 }
 
 function decrypt(text) {
-    let decipher = crypto.createDecipheriv(algorithm, window.passIn, window.iv);
-    let dec = decipher.update(text, 'hex', 'utf8');
-    dec += decipher.final('utf8');
-    return dec;
+    let encryptor = makeEncryptor(window.passIn);
+    let decrypted = encryptor.decrypt(text);
+    return decrypted;
 }
+
+
+// encrypt() and decrypt() derived from examples on node-crypto-examples;
+// The MIT License (MIT), Copyright (c) 2014-2015 Christoph Hartmann
+// https://github.com/chris-rock/node-crypto-examples
+// function encrypt(text) {
+//     window.iv = crypto.pbkdf2(window.passIn, hashPass(), 10000, 512, 'sha512', (err, key) => {
+//         if (err) throw err;
+//         console.log(key.toString('hex'));
+//         return key.toString('hex');
+//     });
+//     let cipher = crypto.createCipheriv(algorithm, window.passIn, window.iv);
+//     let crypted = cipher.update(text, 'utf8', 'hex');
+//     crypted += cipher.final('hex');
+//     return crypted;
+// }
+//
+// function decrypt(text) {
+//     let decipher = crypto.createDecipheriv(algorithm, window.passIn, window.iv);
+//     let dec = decipher.update(text, 'hex', 'utf8');
+//     dec += decipher.final('utf8');
+//     return dec;
+// }
 
 function load() {
     window.db = {};
-    fs.readFile(path.join(__dirname, "..", "..", "/.pdb"), (err, data) => {
+    fs.readFile(path.join(process.cwd(), "/.pdb"), (err, data) => {
         if (err) {
             if (err.fileNotFound) {
                 console.log("No database found. Will create one.");
@@ -114,7 +136,7 @@ function displayStore() {
 }
 
 function store() {
-    fs.writeFile(path.join(__dirname, "..", "..", "/.pdb-backup"), encrypt(window.db), (err) => {
+    fs.writeFile(path.join(process.cwd(), "/.pdb-backup"), encrypt(JSON.stringify(window.db)), (err) => {
         if (err) {
             throw err;
         } else {
@@ -124,7 +146,7 @@ function store() {
     let site = document.getElementById("site-name").value;
     let pwd = document.getElementById("password").value;
     window.db[site] = pwd;
-    fs.writeFile(path.join(__dirname, "..", "..", "/.pdb"), encrypt(window.db), (err) => {
+    fs.writeFile(path.join(process.cwd(), "/.pdb"), encrypt(JSON.stringify(window.db)), (err) => {
         if (err) {
             throw err;
         } else {
