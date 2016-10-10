@@ -142,7 +142,7 @@ function generate() {
     for (let i = 0; i < ranVals.length; i++) {
         passLong += ranVals[i].toString(36);
     }
-    let pass = passLong.substr(1, passLen+1);
+    let pass = passLong.substring(1, passLen+1);
     document.getElementById("password").value = pass;
 }
 
