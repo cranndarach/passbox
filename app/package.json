@@ -9,6 +9,7 @@
   "license": "MIT",
   "main": "javascripts/main/index.js",
   "dependencies": {
-
+      "jsonfile": "^2.4.0",
+      "jssha": "^2.2.0"
   }
 }

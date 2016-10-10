@@ -3,12 +3,10 @@ var path = require('path');
 var jsSHA = require('jssha');
 
 function checkPassword(pass) {
-    let passIn = document.getElementById("password").value;
-    let shaPass = new jsSHA("SHA-256", "TEXT");
-    shaPass.update(passIn);
-    let hashPass = shaPass.getHash("HEX");
-    if (hashPass === pass) {
-        document.getElementById("message").innerHTML = "Thank you!";
+    window.passIn =  document.getElementById("password").value;
+    let hashedPass = hashPass();
+    if (hashedPass === pass) {
+        document.getElementById("pane").innerHTML = window.opt;
     } else {
         document.getElementById("message").innerHTML = "Incorrect password.";
     }
@@ -24,9 +22,17 @@ function setPassword() {
             if(err) {
                 throw err;
             }
-            document.getElementById("message").innerHTML = "Password set!";
+            document.getElementById("pane").innerHTML = `<p>Password set! Please log in.</p>
+                ${window.loginPrompt};`;
         });
     } else {
         document.getElementById("message").innerHTML = "The passwords do not match.";
     }
+}
+
+function hashPass() {
+    let shaPass = new jsSHA("SHA-256", "TEXT");
+    shaPass.update(window.passIn);
+    let hshPass = shaPass.getHash("HEX");
+    return hshPass;
 }

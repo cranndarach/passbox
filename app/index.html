@@ -4,30 +4,45 @@
   <meta charset="UTF-8">
   <title></title>
   <link rel="stylesheet" href="stylesheets/application.css" />
+  <link rel="stylesheet" href="stylesheets/photon/css/photon.css" />
 
   <script src="javascripts/renderer/application.js" type="text/javascript"></script>
   <script src="javascripts/main/login.js" type="text/javascript"></script>
+  <script src="javascripts/main/access.js" type="text/javascript"></script>
 </head>
 <body>
-  <div class="message">
-    <h1 id="title"></h1>
-    <div id="details"></div>
-    <!-- <small id="versions"></small> -->
-  </div>
+  <div class="window">
+    <div class="window-content">
+        <h1 id="title"></h1>
+        <div class="pane-group">
+            <div class="pane-sm sidebar">
+                <nav class="nav-group">
+                  <h5 class="nav-group-title">Pages</h5>
+                  <span class="nav-group-item">Downloads</span>
+                  <span class="nav-group-item">Documents</span>
+                  <span class="nav-group-item">AirPlay</span>
+                </nav>
+            </div>
 
-  <div id="passtest">
-      <script>
-      var a = new Uint32Array(6);
-      var b = window.crypto.getRandomValues(a);
-      var c = "";
-    for (let i = 0; i < b.length; i++) {
-        // let l1 = c.length;
-        c += b[i].toString(36);
-        // let l2 = c.length;
-        // console.log(`Length increase: ${l2 - l1}`);
-    }
-    console.log(c);
-      </script>
+            <div class="pane" id="pane">
+
+            </div>
+        </div>
+          <!-- <div id="passtest">
+              <script>
+              var a = new Uint32Array(6);
+              var b = window.crypto.getRandomValues(a);
+              var c = "";
+            for (let i = 0; i < b.length; i++) {
+                // let l1 = c.length;
+                c += b[i].toString(36);
+                // let l2 = c.length;
+                // console.log(`Length increase: ${l2 - l1}`);
+            }
+            console.log(c);
+              </script>
+          </div> -->
+    </div>
   </div>
 </body>
 </html>
