@@ -1,68 +1,53 @@
-// var jsonfile = require('jsonfile');
 var fs = require('fs');
 var path = require('path');
 var jssha = require('jssha');
 const {clipboard} = require('electron');
-// var crypto = require('crypto');
 
 var algorithm = "aes-256-ctr";
 var pData = "";
 
 function makeEncryptor(pass) {
     let shaPass = new jsSHA("SHA-512", "TEXT");
-    shaPass.update(window.passIn);
+    shaPass.update(pass);
     let key = shaPass.getHash("HEX");
     let encryptor = require('simple-encryptor')(key);
     return encryptor;
 }
 
 function encrypt(text) {
-    let encryptor = makeEncryptor(window.passIn);
-    let encrypted = encryptor.encrypt(text);
+    if (!window.encryptor) {
+        // let key = window.passIn;
+        window.encryptor = makeEncryptor(window.passIn);
+    }
+    // let encryptor = window.encryptor;
+    let encrypted = window.encryptor.encrypt(text);
     return encrypted;
 }
 
 function decrypt(text) {
-    let encryptor = makeEncryptor(window.passIn);
-    let decrypted = encryptor.decrypt(text);
+    if (!window.encryptor) {
+        // let key = window.passIn;
+        window.encryptor = makeEncryptor(window.passIn);
+    }
+    // let encryptor = window.encryptor;
+    let decrypted = window.encryptor.decrypt(text);
+    console.log(decrypted);
     return decrypted;
 }
 
-
-// encrypt() and decrypt() derived from examples on node-crypto-examples;
-// The MIT License (MIT), Copyright (c) 2014-2015 Christoph Hartmann
-// https://github.com/chris-rock/node-crypto-examples
-// function encrypt(text) {
-//     window.iv = crypto.pbkdf2(window.passIn, hashPass(), 10000, 512, 'sha512', (err, key) => {
-//         if (err) throw err;
-//         console.log(key.toString('hex'));
-//         return key.toString('hex');
-//     });
-//     let cipher = crypto.createCipheriv(algorithm, window.passIn, window.iv);
-//     let crypted = cipher.update(text, 'utf8', 'hex');
-//     crypted += cipher.final('hex');
-//     return crypted;
-// }
-//
-// function decrypt(text) {
-//     let decipher = crypto.createDecipheriv(algorithm, window.passIn, window.iv);
-//     let dec = decipher.update(text, 'hex', 'utf8');
-//     dec += decipher.final('utf8');
-//     return dec;
-// }
-
 function load() {
     window.db = {};
-    fs.readFile(path.join(process.cwd(), "/.pdb"), (err, data) => {
+    fs.readFile(path.join(process.cwd(), "/.pwdb"), (err, data) => {
         if (err) {
             if (err.fileNotFound) {
                 console.log("No database found. Will create one.");
             } else {
-                throw err;
+                console.log(err);
             }
         } else {
             let dbFile = decrypt(data);
             window.db = JSON.parse(dbFile);
+            console.log(window.db);
         }
     });
 }
@@ -70,17 +55,19 @@ function load() {
 function displayRetrieve() {
     load();
     let sites = Object.keys(window.db);
+    console.log(`sites: ${sites}`);
     let siteList = [];
     for (let i = 0; i < sites.length; i++) {
         let listOpt = `<option value="${sites[i]}">`;
         siteList.push(listOpt);
     }
+    let siteListHTML = siteList.join();
     let listHTML = `<div id="site-list" class="form">
         <div class="form-group">
             <label>Select a site:</label>
-            <input class="form-control" id="select-site" list="sites">
+            <input list="sites" class="form-control" id="select-site" />
             <datalist id="sites">
-            ${siteList}
+            ${siteListHTML}
             </datalist>
             <button class="form-control" onclick=retrieve("view")>View password</button>
             <button class="form-control" onclick=retrieve("clipboard")>Copy password to clipboard</button>
@@ -136,9 +123,9 @@ function displayStore() {
 }
 
 function store() {
-    fs.writeFile(path.join(process.cwd(), "/.pdb-backup"), encrypt(JSON.stringify(window.db)), (err) => {
+    fs.writeFile(path.join(process.cwd(), "/.pwdb-backup"), encrypt(JSON.stringify(window.db)), (err) => {
         if (err) {
-            throw err;
+            console.log(err);
         } else {
             console.log("Backup saved.");
         }
@@ -146,9 +133,9 @@ function store() {
     let site = document.getElementById("site-name").value;
     let pwd = document.getElementById("password").value;
     window.db[site] = pwd;
-    fs.writeFile(path.join(process.cwd(), "/.pdb"), encrypt(JSON.stringify(window.db)), (err) => {
+    fs.writeFile(path.join(process.cwd(), "/.pwdb"), encrypt(JSON.stringify(window.db)), (err) => {
         if (err) {
-            throw err;
+            console.log(err);
         } else {
             console.log("New db saved.");
         }
