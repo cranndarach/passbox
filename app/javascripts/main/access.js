@@ -3,8 +3,8 @@ var path = require('path');
 var jssha = require('jssha');
 const {clipboard} = require('electron');
 
-var algorithm = "aes-256-ctr";
-var pData = "";
+// var algorithm = "aes-256-ctr";
+// var pData = "";
 
 function makeEncryptor(pass) {
     let shaPass = new jsSHA("SHA-512", "TEXT");
@@ -36,20 +36,27 @@ function decrypt(text) {
 }
 
 function load() {
-    window.db = {};
-    fs.readFile(path.join(process.cwd(), "/.pwdb"), (err, data) => {
-        if (err) {
-            if (err.fileNotFound) {
-                console.log("No database found. Will create one.");
-            } else {
-                console.log(err);
-            }
-        } else {
-            let dbFile = decrypt(data);
-            window.db = JSON.parse(dbFile);
-            console.log(window.db);
-        }
-    });
+    try {
+        let enc = fs.readFileSync(path.join(process.cwd(), "/.pwdb"), 'utf8'); //, (err, data) => {
+        let db = decrypt(enc);
+        window.db = JSON.parse(db);
+            // if (err) {
+            //     if (err.fileNotFound) {
+            //         console.log("No database found. Will create one.");
+            //     } else {
+            //         console.log(err);
+            //     }
+            // } else {
+            //     let dbFile = decrypt(data);
+            //     window.db = JSON.parse(dbFile);
+            //     console.log(window.db);
+            // }
+            // });
+    } catch (err) {
+        console.log(err);
+        console.log("No database found. Will create one.");
+        window.db = {};
+    }
 }
 
 function displayRetrieve() {
@@ -128,19 +135,19 @@ function store() {
             console.log(err);
         } else {
             console.log("Backup saved.");
+            let site = document.getElementById("site-name").value;
+            let pwd = document.getElementById("password").value;
+            window.db[site] = pwd;
+            fs.writeFile(path.join(process.cwd(), "/.pwdb"), encrypt(JSON.stringify(window.db)), (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("New db saved.");
+                    document.getElementById("store-resp").innerHTML = `<p>Password for ${site} saved!</p>`;
+                }
+            });
         }
     });
-    let site = document.getElementById("site-name").value;
-    let pwd = document.getElementById("password").value;
-    window.db[site] = pwd;
-    fs.writeFile(path.join(process.cwd(), "/.pwdb"), encrypt(JSON.stringify(window.db)), (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("New db saved.");
-        }
-    });
-    document.getElementById("store-resp").innerHTML = `<p>Password for ${site} saved!</p>`;
 }
 
 function generate() {
@@ -151,7 +158,7 @@ function generate() {
     for (let i = 0; i < ranVals.length; i++) {
         passLong += ranVals[i].toString(36);
     }
-    let pass = passLong.substring(1, passLen+1);
+    let pass = passLong.substring(0, passLen);
     document.getElementById("password").value = pass;
 }
 
