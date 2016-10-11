@@ -18,9 +18,9 @@ require('electron').ipcRenderer.on('loaded' , function(event, data) {
         <button class="form-control" onclick=setPassword()>Submit</button><br />
         <span id="message"></span>
         </div>`;
-    window.opt = `<div id="options">
-        <button onclick=displayRetrieve()>Retrieve a password</button>
-        <button onclick=displayStore()>Add a password to the database</button>
+    window.opt = `<div id="options" class="form">
+        <button class="btn btn-large btn-primary" onclick=displayRetrieve()>Retrieve a password</button>
+        <button class="btn btn-large btn-primary" onclick=displayStore()>Add a password to the database</button>
         </div>`
 
     if (data.pass) {

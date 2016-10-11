@@ -59,8 +59,10 @@ function displayRetrieve() {
             ${siteListHTML}
             </select>
             <!--/datalist-->
-            <button class="form-control btn btn-form" onclick=retrieve("view")>View password</button>
-            <button class="form-control btn btn-form" onclick=retrieve("clipboard")>Copy password to clipboard</button>
+            <div class="form-actions">
+                <button class="form-control btn btn-form btn-positive" onclick=retrieve("view")>View password</button>
+                <button class="form-control btn btn-form btn-primary" onclick=retrieve("clipboard")>Copy password to clipboard</button>
+            </div>
         </div>
         </div>
         <div id="retrieve-resp"></div>
@@ -105,7 +107,9 @@ function displayStore() {
             <button class="generate" onclick=generate()>Generate</button>
             <button id="hide" onclick=toggleHidePass()>Hide password</button>
         </div>
-        <button class="form-control btn btn-form" onclick=store()>Save password</button>
+        <div class="form-actions">
+        <button class="form-control btn btn-form btn-primary" onclick=store()>Save password</button>
+        </div>
         </div>
         <div id="store-resp"></div>
         ${window.opt}`
