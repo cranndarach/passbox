@@ -3,9 +3,6 @@ var path = require('path');
 var jssha = require('jssha');
 const {clipboard} = require('electron');
 
-// var algorithm = "aes-256-ctr";
-// var pData = "";
-
 function makeEncryptor(pass) {
     let shaPass = new jsSHA("SHA-512", "TEXT");
     shaPass.update(pass);
@@ -16,20 +13,16 @@ function makeEncryptor(pass) {
 
 function encrypt(text) {
     if (!window.encryptor) {
-        // let key = window.passIn;
         window.encryptor = makeEncryptor(window.passIn);
     }
-    // let encryptor = window.encryptor;
     let encrypted = window.encryptor.encrypt(text);
     return encrypted;
 }
 
 function decrypt(text) {
     if (!window.encryptor) {
-        // let key = window.passIn;
         window.encryptor = makeEncryptor(window.passIn);
     }
-    // let encryptor = window.encryptor;
     let decrypted = window.encryptor.decrypt(text);
     console.log(decrypted);
     return decrypted;
@@ -37,21 +30,9 @@ function decrypt(text) {
 
 function load() {
     try {
-        let enc = fs.readFileSync(path.join(process.cwd(), "/.pwdb"), 'utf8'); //, (err, data) => {
+        let enc = fs.readFileSync(path.join(process.cwd(), "/.pwdb"), 'utf8');
         let db = decrypt(enc);
         window.db = JSON.parse(db);
-            // if (err) {
-            //     if (err.fileNotFound) {
-            //         console.log("No database found. Will create one.");
-            //     } else {
-            //         console.log(err);
-            //     }
-            // } else {
-            //     let dbFile = decrypt(data);
-            //     window.db = JSON.parse(dbFile);
-            //     console.log(window.db);
-            // }
-            // });
     } catch (err) {
         console.log(err);
         console.log("No database found. Will create one.");
@@ -65,20 +46,22 @@ function displayRetrieve() {
     console.log(`sites: ${sites}`);
     let siteList = [];
     for (let i = 0; i < sites.length; i++) {
-        let listOpt = `<option value="${sites[i]}">`;
+        let listOpt = `<option value="${sites[i]}">${sites[i]}</option>`;
         siteList.push(listOpt);
     }
-    let siteListHTML = siteList.join();
+    let siteListHTML = siteList.join("");
     let listHTML = `<div id="site-list" class="form">
         <div class="form-group">
             <label>Select a site:</label>
-            <input list="sites" class="form-control" id="select-site" />
-            <datalist id="sites">
+            <!--input type="text" list="sites" class="form-control" id="select-site" autocomplete="on" /-->
+            <!--datalist id="sites"-->
+            <select id="select-site" class="form-control">
             ${siteListHTML}
-            </datalist>
-            <button class="form-control" onclick=retrieve("view")>View password</button>
-            <button class="form-control" onclick=retrieve("clipboard")>Copy password to clipboard</button>
-            </div>
+            </select>
+            <!--/datalist-->
+            <button class="form-control btn btn-form" onclick=retrieve("view")>View password</button>
+            <button class="form-control btn btn-form" onclick=retrieve("clipboard")>Copy password to clipboard</button>
+        </div>
         </div>
         <div id="retrieve-resp"></div>
         ${window.opt}`;
@@ -122,7 +105,7 @@ function displayStore() {
             <button class="generate" onclick=generate()>Generate</button>
             <button id="hide" onclick=toggleHidePass()>Hide password</button>
         </div>
-        <button class="form-control" onclick=store()>Save password</button>
+        <button class="form-control btn btn-form" onclick=store()>Save password</button>
         </div>
         <div id="store-resp"></div>
         ${window.opt}`
