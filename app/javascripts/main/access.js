@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var jssha = require('jssha');
+var arrMember = require('array-member');
 const {clipboard} = require('electron');
 
 function makeEncryptor(pass) {
@@ -124,6 +125,14 @@ function store() {
             console.log("Backup saved.");
             let site = document.getElementById("site-name").value;
             let pwd = document.getElementById("password").value;
+            if (arrMember.objectKey(site, window.db)) {
+                let overwrite = confirm(`There is already an entry for ${site}.
+                Press "OK" to overwrite it, or "Cancel" to go back.` );
+                if(overwrite == false) {
+                    document.getElementById("store-resp").innerHTML = `<p>Password for ${site} not changed.</p>`
+                    return;
+                }
+            }
             window.db[site] = pwd;
             fs.writeFile(path.join(process.cwd(), "/.pwdb"), encrypt(JSON.stringify(window.db)), (err) => {
                 if (err) {
