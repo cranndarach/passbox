@@ -104,24 +104,18 @@ function displayStore() {
         </div>
         <div class="form-group">
         <label>Password:</label>
-        <p>
-            <div class="inline-group">
-                <input class="form-control" type="text" id="password" />
-                <button class="form-control btn" id="hide" onclick=toggleHidePass()>Hide password</button>
-            </div>
-        </p>
+        <input class="form-control" type="text" id="password" />
         </div>
         <div class="form-group">
-        <p>
-            <div class="inline-group">
-                <label>Generate a password with</label>
-                <input class="form-control" id="digits" type="number" value=32 min=8 max=100 />
-                <label>characters.</label>
-                <button class="form-control btn" onclick=generate()>Generate</button>
-            </div>
-        </p>
+        <div class="inline-group">
+            <label>Generate a password with</label>
+            <input class="form-control" id="digits" type="number" value=32 min=8 max=100 />
+            <label>characters.</label>
+            <button class="form-control btn" onclick=generate()>Generate</button>
+        </div>
         </div>
         <div class="form-actions">
+        <button class="form-control btn" id="hide" onclick=toggleHidePass()>Hide password</button>
         <button class="form-control btn btn-form btn-primary" onclick=store()>Save password</button>
         </div>
         </div>
