@@ -61,7 +61,7 @@ function displayRetrieve() {
             </select>
             <!--/datalist-->
             <div class="form-actions">
-                <button class="form-control btn btn-form btn-positive" onclick=retrieve("view")>View password</button>
+                <button class="form-control btn btn-form btn-primary" onclick=retrieve("view")>View password</button>
                 <button class="form-control btn btn-form btn-primary" onclick=retrieve("clipboard")>Copy password to clipboard</button>
             </div>
         </div>
@@ -92,21 +92,34 @@ function retrieve(style) {
 }
 
 function displayStore() {
+    document.getElementById("nav-store").class = "nav-group-item active";
+    document.getElementById("nav-retrieve").class = "nav-group-item";
     if (!window.db) {
         load();
     }
     let storeHTML = `<div class="form" id="store-pass">
         <div class="form-group">
             <label>Site label:</label>
-            <input type="text" id="site-name" />
+            <input class="form-control" type="text" id="site-name" />
         </div>
         <div class="form-group">
-            <label>Password:</label>
-            <input type="text" id="password" />
-            <label class="generate">Generate a password: (How many digits?)</label>
-            <input class="generate" id="digits" type="number" value=32 min=8 max=100 />
-            <button class="generate" onclick=generate()>Generate</button>
-            <button id="hide" onclick=toggleHidePass()>Hide password</button>
+        <label>Password:</label>
+        <p>
+            <div class="inline-group">
+                <input class="form-control" type="text" id="password" />
+                <button class="form-control btn" id="hide" onclick=toggleHidePass()>Hide password</button>
+            </div>
+        </p>
+        </div>
+        <div class="form-group">
+        <p>
+            <div class="inline-group">
+                <label>Generate a password with</label>
+                <input class="form-control" id="digits" type="number" value=32 min=8 max=100 />
+                <label>characters.</label>
+                <button class="form-control btn" onclick=generate()>Generate</button>
+            </div>
+        </p>
         </div>
         <div class="form-actions">
         <button class="form-control btn btn-form btn-primary" onclick=store()>Save password</button>

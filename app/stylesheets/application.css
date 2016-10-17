@@ -51,13 +51,59 @@ body {
     margin: auto;
 }
 
-#options {
+/*#options {
     margin-top: 3em;
     margin:auto;
-}
+}*/
 
 .btn {
     font-size: 1em;
+    margin-top: .3em;
+}
+
+.options {
+    margin-top: 2em;
+}
+
+.option-btn {
+    width: 49%;
+    margin: auto;
+}
+
+#retrieve-resp, #store-resp {
+    height: 2.2em;
+}
+
+.inline-group {
+    display: block;
+}
+
+.inline-group label,
+.inline-group .form-control {
+    display: inline-block;
+    width: 20%;
+    margin: inherit .3em;
+    /*margin-right: .3em;*/
+    float: left;
+}
+
+.inline-group label {
+        width: auto;
+        margin-right: .5em;
+}
+
+.inline-group #password {
+    width: 40%;
+}
+
+form label, .inline-group {
+    margin-top: 1em;
+    margin-bottom: 0;
+}
+
+form .form-control {
+    margin-top: .2em;
+    margin-bottom: 0;
 }
 
 /*.btn-large {
