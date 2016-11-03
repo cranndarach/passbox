@@ -7,3 +7,4 @@ app/node_modules
 .boxpasswd
 .pwdb*
 *.log
+*_old

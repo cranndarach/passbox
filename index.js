@@ -20,8 +20,6 @@ electron.app.on('ready', () => {
   window.loadURL('file://' + path.join(__dirname, '..', '..') + '/index.html');
   // window.openDevTools();
 
-
-
   window.webContents.on('did-finish-load', () => {
     let passpath = path.join(__dirname, "..", "..", "/.boxpasswd");
     fs.readFile(passpath, (err, data) => {
